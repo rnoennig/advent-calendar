@@ -1,0 +1,81 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+.imgbox {
+    display: grid;
+    height: 100%;
+}
+.center-fit {
+    max-width: 100%;
+    max-height: 100vh;
+    margin: auto;
+}
+#bg {
+    position: relative;
+}
+
+.door {
+    position: absolute;
+    width: 5%;
+    --animate-repeat: infinite;
+}
+.door img {
+    width: 100%;
+}
+.door.open {
+    filter: saturate(100%);
+}
+.door.open .doorimg:hover {
+    cursor: pointer;
+}
+.door.closed {
+    filter: saturate(0%);
+}
+.door.today {
+    background: url('/img/sparkle.gif');
+}
+.door img {
+    position: absolute;
+}
+.door .sparkle {
+    top: 0;
+    left: -100%;
+    width: 300%;
+    margin-top: -100%;
+    z-index: -20;
+    pointer-events: none;
+}
+#dialog {
+    background: rgb(93, 151, 174);
+    border-image-width: auto;
+    border-width: 120px 240px;
+    border-style: solid;
+    border-image-source: url('/img/border.png');
+    border-image-slice: 105 230 105 220;
+    border-image-repeat: repeat;
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    margin: auto;
+}
+#dialog .text * {
+    color: white;
+    font-size: x-large;
+    font-family: sans serif;
+    text-align: center;
+}
+#dialog h1, #dialog .img {
+    padding: 1em 0;
+}
+#dialog .text p {
+    padding: 0.5em 0;
+}
+#dialog .img {
+    text-align: center;
+}
+#dialog .img img {
+    max-width: 100%;
+    height: auto;
+}

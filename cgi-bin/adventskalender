@@ -1,0 +1,41 @@
+#!/usr/bin/bash
+# this script is called with a query string like "script?day=1" so QUERY_STRING will be "day=1"
+# when the 1st of december has begun and day 1 is requested a secret file is served from /var/www/html/adventskalender/secret/1.json
+
+# parse query parameters
+urldecode(){
+  echo -e "$(sed 's/+/ /g;s/%\(..\)/\\x\1/g;')";
+}
+saveIFS=$IFS;
+IFS='=&';
+query=($QUERY_STRING);
+IFS=$saveIFS;
+for ((i=0; i<${#query[@]}; i+=2))
+do
+	rawvalue="${query[i+1]}";
+	# url decode "%20" into
+	decodedvalue="${rawvalue//%20/ }";
+	declare query_${query[i]}="$decodedvalue";
+done
+
+# 1, 2, .. 24
+DAY="$query_day";
+# 2021-12-01, 2021-12-02, .. 2021-12-24
+DEZ_N=$(TZ="Europe/Berlin" date -d "Dec $DAY 2021" +%s);
+#DEZ_N=$(TZ="Europe/Berlin" date -d "Nov 30 2021" +%s);
+NOW=$(date -d "now" +%s);
+
+# when query contains santa=2021-12-11%2023:59:59 then simulate NOW to be that date
+if [ -n "$query_santa" ]; then
+	NOW=$(TZ="Europe/Berlin" date -d "$query_santa" +%s);
+fi
+
+# second until requested day
+SECONDS=$(( (DEZ_N - NOW) ));
+if [ "$DAY" -eq "$DAY" ] && [ "$SECONDS" -le 0 ]; then
+	printf 'Content-type: text/html\n\n';
+	cat "/var/www/html/adventskalender/secret/$DAY.json";
+else
+	printf 'Status: 403 Forbidden\n';
+	printf "Content-Type: text/html\r\n\r\n";
+fi
